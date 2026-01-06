@@ -1,12 +1,10 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var expressHbs = require('express-handlebars');
+import express, { json, urlencoded, static as express_static } from 'express';
+import { join } from 'path';
+import logger from 'morgan';
+import cookieParser from 'cookie-parser';
+import expressHbs from 'express-handlebars';
 
-var routes = require('./routes/index');
+import routes from './routes/index';
 
 var app = express();
 
@@ -17,10 +15,10 @@ app.set('view engine', '.hbs');
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(json());
+app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express_static(join(__dirname, 'public')));
 
 app.use('/', routes);
 
@@ -56,4 +54,4 @@ app.use(function(err, req, res, next) {
 });
 
 
-module.exports = app;
+export default app;
