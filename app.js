@@ -1,23 +1,21 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var expressHbs = require('express-handlebars');
-var mongoose = require('mongoose');
-var session = require('express-session');
-var passport = require('passport');
-var flash = require('connect-flash');
-var validator = require('express-validator');
+import express, { json, urlencoded, static as express_static } from 'express';
+import { join } from 'path';
+import logger from 'morgan';
+import cookieParser from 'cookie-parser';
+import expressHbs from 'express-handlebars';
+import { connect } from 'mongoose';
+import session from 'express-session';
+import { initialize, session as _session } from 'passport';
+import flash from 'connect-flash';
+import validator from 'express-validator';
 
-var routes = require('./routes/index');
-var userRoutes = require('./routes/user');
+import routes from './routes/index';
+import userRoutes from './routes/user';
 
 var app = express();
 
-mongoose.connect('localhost:27017/shopping');
-require('./config/passport');
+connect('localhost:27017/shopping');
+import './config/passport';
 
 // view engine setup
 app.engine('.hbs', expressHbs({defaultLayout: 'layout', extname: '.hbs'}));
@@ -26,15 +24,15 @@ app.set('view engine', '.hbs');
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(json());
+app.use(urlencoded({ extended: false }));
 app.use(validator());
 app.use(cookieParser());
 app.use(session({secret: 'mysupersecret', resave: false, saveUninitialized: false}));
 app.use(flash());
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(initialize());
+app.use(_session());
+app.use(express_static(join(__dirname, 'public')));
 
 app.use(function(req, res, next) {
     res.locals.login = req.isAuthenticated();
@@ -76,4 +74,4 @@ app.use(function(err, req, res, next) {
 });
 
 
-module.exports = app;
+export default app;
